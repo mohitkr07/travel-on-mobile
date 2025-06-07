@@ -1,0 +1,275 @@
+import { TColors } from "@/types/theme";
+import { useTheme } from "@react-navigation/native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Pressable,
+  // CheckBox,
+  // Platform,
+} from "react-native";
+import { Checkbox } from "expo-checkbox";
+import { SafeAreaView } from "react-native-safe-area-context";
+import LadyWithPhone from "@/assets/svgs/LadyWithPhone";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import EmailIcon from "@/assets/svgs/EmailIcon";
+import GoogleIcon from "@/assets/svgs/GoogleIcon";
+import LadyWithEmail from "@/assets/svgs/LadyWithEmail";
+import { isValidEmail } from "@/utils/validation";
+
+export default function Login() {
+  const { colors } = useTheme();
+  const styles = getStyles(colors as TColors);
+
+  const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState(false);
+  const [isLoginViaPhone, setIsLoginViaPhone] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const toggleLoginMethod = () => {
+    setIsLoginViaPhone(!isLoginViaPhone);
+    setMobile("");
+    setEmail("");
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={{ marginTop: 40 }}>
+        {isLoginViaPhone ? (
+          <LadyWithPhone width={250} height={200} />
+        ) : (
+          <LadyWithEmail width={250} height={200} />
+        )}
+      </View>
+      <Text style={styles.header}>
+        {isLoginViaPhone ? "Enter Mobile Number" : "Enter Email"}
+      </Text>
+      <View
+        style={[
+          styles.inputContainer,
+          isFocused && { borderColor: colors.border },
+        ]}
+      >
+        {isLoginViaPhone && <Text style={styles.countryCode}>+91 🇮🇳</Text>}
+        {isLoginViaPhone ? (
+          <TextInput
+            style={styles.input}
+            placeholder="Enter mobile number"
+            keyboardType="phone-pad"
+            value={mobile}
+            onChangeText={setMobile}
+            maxLength={10}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            placeholder="Enter email address"
+            keyboardType="email-address"
+            editable={!isLoginViaPhone}
+            value={email}
+            onChangeText={setEmail}
+            // maxLength={10}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        )}
+      </View>
+
+      <View style={styles.otpButton}>
+        {isLoginViaPhone ? (
+          <PrimaryButton
+            label="SEND OTP"
+            onPress={() => console.log("send otp")}
+            disabled={mobile.length === 10 ? false : true}
+          />
+        ) : (
+          <PrimaryButton
+            label="SEND OTP"
+            onPress={() => console.log("send otp")}
+            disabled={!email || !isValidEmail(email)}
+          />
+        )}
+      </View>
+
+      <Pressable
+        style={styles.checkboxContainer}
+        onPress={() => setWhatsapp(!whatsapp)}
+      >
+        <Checkbox
+          value={whatsapp}
+          onValueChange={setWhatsapp}
+          color={whatsapp ? colors.primary : undefined}
+          style={{
+            borderWidth: 1,
+            width: 20,
+            height: 20,
+            borderColor: colors.border,
+          }}
+        />
+        <Text style={styles.checkboxLabel}>
+          I agree to receive updates over whatsapp
+        </Text>
+      </Pressable>
+      <Text style={styles.terms}>
+        By signing up, you agree to the{" "}
+        <Text style={styles.link}>Terms Of Service</Text> and{" "}
+        <Text style={styles.link}>Privacy Policy</Text>
+      </Text>
+      <View style={styles.dividerContainer}>
+        <View style={styles.divider} />
+        <Text style={styles.or}>Or</Text>
+        <View style={styles.divider} />
+      </View>
+
+      <View style={styles.socialContainer}>
+        <View style={styles.socialButtonContainer}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={toggleLoginMethod}
+          >
+            <EmailIcon width={24} height={24} />
+          </TouchableOpacity>
+          <Text style={styles.socialText}>
+            {isLoginViaPhone ? "Email" : "OTP"}
+          </Text>
+        </View>
+
+        <View style={styles.socialButtonContainer}>
+          <TouchableOpacity style={styles.socialButton}>
+            <GoogleIcon width={24} height={24} />
+          </TouchableOpacity>
+          <Text style={styles.socialText}>Google</Text>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const getStyles = (colors: TColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: "center",
+      // justifyContent: "center",
+      paddingHorizontal: 24,
+    },
+    header: {
+      color: colors.text,
+      fontSize: 18,
+      fontWeight: "bold",
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      marginTop: 8,
+      marginBottom: 12,
+      paddingHorizontal: 12,
+      width: "100%",
+      height: 54,
+      borderColor: colors.border,
+      borderWidth: 1,
+    },
+    countryCode: {
+      fontSize: 16,
+      color: colors.text,
+      marginRight: 8,
+    },
+    input: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+    },
+    otpButton: {
+      width: "100%",
+      height: 48,
+      borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 8,
+      marginBottom: 15,
+    },
+    otpButtonText: {
+      color: "#fff",
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    checkboxContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: 15,
+      paddingHorizontal: 10,
+    },
+    checkboxLabel: {
+      marginLeft: 8,
+      color: colors.text,
+      fontSize: 14,
+    },
+    terms: {
+      color: colors.text,
+      fontSize: 12,
+      textAlign: "center",
+      marginBottom: 16,
+      paddingHorizontal: 10,
+    },
+    link: {
+      color: colors.primary,
+      textDecorationLine: "underline",
+    },
+    dividerContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      marginVertical: 8,
+    },
+    divider: {
+      // flex: 1,
+      width: 100,
+      height: 0.5,
+      backgroundColor: colors.border,
+    },
+    or: {
+      marginHorizontal: 8,
+      color: colors.textDisabled,
+      fontSize: 14,
+    },
+    socialContainer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: 60,
+      marginTop: 8,
+    },
+    socialButtonContainer: {
+      alignItems: "center",
+      gap: 4,
+    },
+    socialButton: {
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.backgroundDisabled,
+      borderRadius: 100,
+      height: 50,
+      width: 50,
+    },
+    socialIcon: {
+      width: 24,
+      height: 24,
+    },
+    socialText: {
+      color: colors.text,
+      fontSize: 16,
+    },
+  });

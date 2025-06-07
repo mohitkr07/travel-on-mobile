@@ -9,10 +9,9 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: "#000",
         headerShown: false,
-        tabBarButton: () => null, // Disable tab bar button for this example
+        tabBarButton: () => null,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: "absolute",
           },
           default: {},
