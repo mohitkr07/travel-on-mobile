@@ -1,52 +1,69 @@
-import { TColors } from "@/types/theme";
-import { useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Pressable,
-  // CheckBox,
-  // Platform,
-} from "react-native";
-import { Checkbox } from "expo-checkbox";
-import { SafeAreaView } from "react-native-safe-area-context";
-import LadyWithPhone from "@/assets/svgs/LadyWithPhone";
-import PrimaryButton from "@/components/ui/PrimaryButton";
 import EmailIcon from "@/assets/svgs/EmailIcon";
 import GoogleIcon from "@/assets/svgs/GoogleIcon";
 import LadyWithEmail from "@/assets/svgs/LadyWithEmail";
+import LadyWithPhone from "@/assets/svgs/LadyWithPhone";
+import PhoneIcon from "@/assets/svgs/PhoneIcon";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
+import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
+import { useTheme } from "@react-navigation/native";
+import { Checkbox } from "expo-checkbox";
+import React, { useState } from "react";
+import {
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
+  const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
-
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState(false);
-  const [isLoginViaPhone, setIsLoginViaPhone] = useState(true);
+  // const [isLoginViaPhone, setLoginMethod] = useState(true);
+  const { loginMethod} = useAppSelector((state) => state.app);
   const [isFocused, setIsFocused] = useState(false);
 
   const toggleLoginMethod = () => {
-    setIsLoginViaPhone(!isLoginViaPhone);
+    dispatch(setLoginMethod(loginMethod === 'phone' ? 'email' : 'phone'));
     setMobile("");
     setEmail("");
+  };
+
+  const handleOtpSent = (method: "phone" | "email") => {
+    if (method === "phone" && mobile.length === 10) {
+      console.log("OTP sent to phone:", mobile);
+      dispatch(setBottomSheetIndex(1));
+      Keyboard.dismiss();
+    } else if (method === "email" && isValidEmail(email)) {
+      console.log("OTP sent to email:", email);
+      dispatch(setBottomSheetIndex(1));
+      Keyboard.dismiss();
+    } else {
+      console.error("Invalid input for OTP sending");
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ marginTop: 40 }}>
-        {isLoginViaPhone ? (
+        {loginMethod === 'phone' ? (
           <LadyWithPhone width={250} height={200} />
         ) : (
           <LadyWithEmail width={250} height={200} />
         )}
       </View>
       <Text style={styles.header}>
-        {isLoginViaPhone ? "Enter Mobile Number" : "Enter Email"}
+        {loginMethod === 'phone' ? "Enter Mobile Number" : "Enter Email"}
       </Text>
       <View
         style={[
@@ -54,8 +71,8 @@ export default function Login() {
           isFocused && { borderColor: colors.border },
         ]}
       >
-        {isLoginViaPhone && <Text style={styles.countryCode}>+91 🇮🇳</Text>}
-        {isLoginViaPhone ? (
+        {loginMethod === 'phone' && <Text style={styles.countryCode}>+91 🇮🇳</Text>}
+        {loginMethod === 'phone' ? (
           <TextInput
             style={styles.input}
             placeholder="Enter mobile number"
@@ -65,33 +82,34 @@ export default function Login() {
             maxLength={10}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-          />
-        ) : (
-          <TextInput
+            autoFocus={!email && !mobile}
+            />
+          ) : (
+            <TextInput
             style={styles.input}
             placeholder="Enter email address"
             keyboardType="email-address"
-            editable={!isLoginViaPhone}
+            editable={loginMethod === 'email'}
             value={email}
             onChangeText={setEmail}
-            // maxLength={10}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            autoFocus={!email && !mobile}
           />
         )}
       </View>
 
       <View style={styles.otpButton}>
-        {isLoginViaPhone ? (
+        {loginMethod === 'phone' ? (
           <PrimaryButton
             label="SEND OTP"
-            onPress={() => console.log("send otp")}
+            onPress={() => handleOtpSent("phone")}
             disabled={mobile.length === 10 ? false : true}
           />
         ) : (
           <PrimaryButton
             label="SEND OTP"
-            onPress={() => console.log("send otp")}
+            onPress={() => handleOtpSent("email")}
             disabled={!email || !isValidEmail(email)}
           />
         )}
@@ -116,6 +134,7 @@ export default function Login() {
           I agree to receive updates over whatsapp
         </Text>
       </Pressable>
+
       <Text style={styles.terms}>
         By signing up, you agree to the{" "}
         <Text style={styles.link}>Terms Of Service</Text> and{" "}
@@ -133,10 +152,14 @@ export default function Login() {
             style={styles.socialButton}
             onPress={toggleLoginMethod}
           >
-            <EmailIcon width={24} height={24} />
+            {loginMethod === 'phone' ? (
+              <EmailIcon width={24} height={24} />
+            ) : (
+              <PhoneIcon width={24} height={24} />
+            )}
           </TouchableOpacity>
           <Text style={styles.socialText}>
-            {isLoginViaPhone ? "Email" : "OTP"}
+            {loginMethod === 'phone' ? "Email" : "OTP"}
           </Text>
         </View>
 
@@ -270,6 +293,6 @@ const getStyles = (colors: TColors) =>
     },
     socialText: {
       color: colors.text,
-      fontSize: 16,
+      fontSize: 12,
     },
   });

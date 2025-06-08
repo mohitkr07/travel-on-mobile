@@ -28,6 +28,7 @@ export default function RootLayout() {
         <Provider store={store}>
           <ThemeProvider
             value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
+            // value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
           >
             <Stack screenOptions={{ headerShown: false }} />
             <StatusBar style="auto" />
