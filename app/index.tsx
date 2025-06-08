@@ -2,7 +2,6 @@ import Welcome1 from "@/assets/svgs/Welcome1";
 import Welcome2 from "@/assets/svgs/Welcome2";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { openBottomSheet, setBottomSheetIndex } from "@/redux/slices/appSlice";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
@@ -62,8 +61,6 @@ const Welcome = () => {
   const styles = getStyles(colors as TColors);
   const [page, setPage] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
-  const dispatch = useAppDispatch()
-  const {bottomSheetOpen} = useAppSelector((state) => state.app);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { contentOffset } = event.nativeEvent;
@@ -72,9 +69,7 @@ const Welcome = () => {
   };
 
   const handlePlanPostPack = () => {
-    console.log("Plan, Post, Pack button pressed", bottomSheetOpen);
-    // navigate.push("/(auth)/login");
-    dispatch(setBottomSheetIndex(1))
+    navigate.push("/(auth)/login");
   };
 
   return (
