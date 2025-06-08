@@ -1,9 +1,15 @@
+import { Stack } from 'expo-router'
 import React from 'react'
-import { View } from 'react-native'
 
 const ProfileLayout = () => {
   return (
-    <View></View>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </Stack>
   )
 }
 

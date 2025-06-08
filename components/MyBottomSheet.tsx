@@ -46,6 +46,10 @@ const MyBottomSheet = () => {
       snapPoints={["65%"]}
       enablePanDownToClose={true}
       handleIndicatorStyle={{ display: "none" }}
+      enableDynamicSizing={true}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      maxDynamicContentSize={500}
     >
       <BottomSheetView
         style={{

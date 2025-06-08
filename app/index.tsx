@@ -124,14 +124,14 @@ const getStyles = (colors: TColors) =>
       marginTop: 24,
       padding: 7,
       borderRadius: 100,
-      backgroundColor: colors.backgroundDisabled,
+      // backgroundColor: colors.backgroundDisabled,
       top: responsiveHeight(37),
     },
     dot: {
       width: 8,
       height: 8,
       borderRadius: 100,
-      backgroundColor: colors.textLight1,
+      backgroundColor: colors.border,
       marginHorizontal: 4,
     },
     dotActive: {
