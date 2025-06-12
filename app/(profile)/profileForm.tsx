@@ -1,49 +1,75 @@
+import CustomHeader from "@/components/ui/CustomHeader";
+import { FormField } from "@/components/ui/FormField";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import { RadioButton } from "@/components/ui/RadioButton";
 import { TColors } from "@/types/theme";
 import { useTheme } from "@react-navigation/native";
-import React from "react";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Platform,
   StyleSheet,
   Text,
-  TextInput,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ProfileForm = () => {
+const ProfileForm: React.FC = () => {
+  const router = useRouter();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
+  const [gender, setGender] = useState<"male" | "female" | null>(null);
 
   return (
-  <SafeAreaView style={styles.container}>
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={{ flex: 1 }}>
-          <View>
-            <Text style={styles.label}>First Name</Text>
-            <TextInput style={styles.input} placeholder="Your First Name" />
-          </View>
-          <View>
-            <Text style={styles.label}>Last Name</Text>
-            <TextInput style={styles.input} placeholder="Your Last Name" />
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
-  </SafeAreaView>
-);
+    <SafeAreaView style={styles.container}>
+      <CustomHeader
+        title="Complete your profile"
+        subtitle="what would you like your buddies to call you?"
+      />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.section}>
+              <FormField label="First Name" placeholder="Your First Name" />
+              <FormField label="Last Name" placeholder="Your Last Name" />
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Gender</Text>
+              <View style={styles.genderRow}>
+                <RadioButton
+                  label="Male"
+                  isActive={gender === "male"}
+                  onPress={() => setGender("male")}
+                />
+                <RadioButton
+                  label="Female"
+                  isActive={gender === "female"}
+                  onPress={() => setGender("female")}
+                />
+              </View>
+            </View>
 
+            <View style={{ flex: 1 }} />
+
+            <PrimaryButton
+              label="Next"
+              onPress={() => router.push("/profilePic")}
+              style={{ marginBottom: 15, marginTop: 10 }}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 };
 
-export default ProfileForm;
-
-const getStyles = (colors: any) =>
+const getStyles = (colors: TColors) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -51,18 +77,19 @@ const getStyles = (colors: any) =>
       padding: 20,
     },
     label: {
-      fontSize: 16,
-      color: colors.textLight1,
-      // marginBottom: 8,
+      fontSize: 14,
+      color: colors.textDisabled,
+      marginBottom: 6,
     },
-    input: {
-      backgroundColor: colors.background,
-      borderRadius: 16,
-      marginTop: 8,
-      marginBottom: 12,
-      paddingHorizontal: 12,
-      height: 54,
-      borderColor: colors.border,
-      borderWidth: 1,
+    section: {
+      marginBottom: 18,
+    },
+    genderRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 22,
+      marginTop: 2,
     },
   });
+
+export default ProfileForm;

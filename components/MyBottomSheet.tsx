@@ -6,12 +6,14 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { useEffect, useRef } from "react";
 import { BackHandler, Keyboard } from "react-native";
 import OTPVerify from "./auth/OTPVerify";
+import TripTypeChipSelector from "./TripTypeChipSelector";
 
 const MyBottomSheet = () => {
   const dispatch = useAppDispatch();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { bottomSheetIndex } = useAppSelector((state) => state.app);
-
+  const { bottomSheetContent, bottomSheetIndex } = useAppSelector((state) => state.app);
+  const [showHandleIndicator, setShowHandleIndicator] = React.useState(true);
+  
   useEffect(() => {
     const backAction = () => {
       if (bottomSheetIndex !== -1) {
@@ -46,13 +48,32 @@ const MyBottomSheet = () => {
     }
   };
 
+  useEffect(() => {
+    if (bottomSheetContent === 'otpVerify') {
+      setShowHandleIndicator(false);
+    } else {
+      setShowHandleIndicator(true);
+    }
+  }, [bottomSheetContent, bottomSheetIndex]);
+
+  const bottomSheetContentComponent = () =>{
+    switch (bottomSheetContent) {
+      case "otpVerify":
+        return <OTPVerify closeBottomSheet={() => bottomSheetRef?.current?.close()} />;
+      case 'tripSurvey': 
+        return <TripTypeChipSelector />; 
+      default:
+        return null;
+    }
+  }
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
       index={-1}
       enablePanDownToClose={true}
-      handleIndicatorStyle={{ display: "none" }}
+      handleIndicatorStyle={{display: showHandleIndicator ? 'flex' : 'none'}}
       enableDynamicSizing={true}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
@@ -64,7 +85,7 @@ const MyBottomSheet = () => {
           alignItems: "center",
         }}
       >
-          <OTPVerify closeBottomSheet={() => bottomSheetRef?.current?.close()} />
+      { bottomSheetContentComponent()}
       </BottomSheetView>
     </BottomSheet>
   );

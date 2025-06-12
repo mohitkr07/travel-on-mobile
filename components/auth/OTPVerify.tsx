@@ -5,13 +5,13 @@ import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Keyboard,
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Keyboard,
+    KeyboardAvoidingView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
 
@@ -22,7 +22,7 @@ type OTPVerifyProps = {
 };
 
 const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
-  const navigate = useRouter();
+  const router = useRouter();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
@@ -73,7 +73,7 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   const handleOTPVerify = () => {
     console.log("OTP Verified:", otp.join(""));
     closeBottomSheet();
-    navigate.push("/(profile)/profileForm");
+    router.push("/(profile)/profileForm");
   };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

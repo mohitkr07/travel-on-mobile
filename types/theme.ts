@@ -23,6 +23,7 @@ type TCustomTheme = {
     text: string;
     border: string;
     notification: string;
+    textLight0: string;
     textLight1: string;
     backgroundDisabled: string;
     linebreak: string;

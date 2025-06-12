@@ -1,9 +1,9 @@
-//write a CustomHeader component that takes a title and a subtitle as props and displays them in a header format
 import BackArrow from "@/assets/svgs/BackArrow";
 import { TColors } from "@/types/theme";
 import { useTheme } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 const CustomHeader = ({
   title,
@@ -14,10 +14,13 @@ const CustomHeader = ({
 }) => {
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
+  const router = useRouter()
 
   return (
     <View style={styles.headerContainer}>
-      <BackArrow height={20} width={26} />
+      <Pressable onPress={() => router.back()}>
+        <BackArrow height={20} width={26} />
+      </Pressable>
       <View>
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
@@ -29,21 +32,17 @@ const CustomHeader = ({
 const getStyles = (colors: any) =>
   StyleSheet.create({
     headerContainer: {
-    //   backgroundColor: colors.primary,
-      //   alignItems: 'center',
       justifyContent: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 25,
+        paddingBottom: 25,
         gap: 20
     },
     title: {
       fontSize: 24,
       fontWeight: "bold",
-      color: colors.text,
+      color: colors.textLight0,
     },
     subtitle: {
-    //   fontSize: 16,
-      color: colors.textLight1,
+      color: colors.textDisabled,
         marginTop: 4,
         marginLeft: 2
     },

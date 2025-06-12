@@ -1,17 +1,18 @@
+import { TPrimaryButton } from "@/types/components";
+import { TColors } from "@/types/theme";
+import { responsiveFontSize } from "@/utils/responsive";
+import { useTheme } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
-import { TPrimaryButton } from "@/types/components";
-import { responsiveFontSize } from "@/utils/responsive";
-import { TColors } from "@/types/theme";
 
-const PrimaryButton = ({ label, onPress, disabled, width }: TPrimaryButton) => {
+const PrimaryButton = ({ label, onPress, disabled, width, style }: TPrimaryButton) => {
   const { colors } = useTheme();
   const typedColors = colors as TColors;
   const styles = getStyles(typedColors);
 
   return (
-    <TouchableOpacity
+    <View style={[{ width: width || "100%"}, style]}>
+      <TouchableOpacity
       style={[styles.button, disabled && { backgroundColor: "transparent" }]}
       onPress={onPress}
       disabled={disabled}
@@ -26,6 +27,7 @@ const PrimaryButton = ({ label, onPress, disabled, width }: TPrimaryButton) => {
         <Text style={styles.buttonText}>{label}</Text>
       </View>
     </TouchableOpacity>
+    </View>
   );
 };
 
@@ -34,7 +36,7 @@ export default PrimaryButton;
 const getStyles = (colors: TColors) =>
   StyleSheet.create({
     button: {
-      backgroundColor: "#166EBA",
+      backgroundColor: "#1FA1CC",
       borderRadius: 16,
       height: 54,
       width: "100%",

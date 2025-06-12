@@ -5,12 +5,12 @@ import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,7 +23,7 @@ type CommonContainerProps = {
 const CommonContainer = ({ children }: CommonContainerProps) => {
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
-  const navigate= useRouter();
+  const router= useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView

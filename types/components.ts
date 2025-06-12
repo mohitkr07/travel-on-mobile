@@ -1,9 +1,10 @@
+
 type TPrimaryButton = {
     label: string;
     onPress: () => void;
     disabled?: boolean;
     style?: object;
-    width?: number | string;
+    width?: any;
 }
 
 export type { TPrimaryButton };

@@ -5,7 +5,7 @@ import LadyWithPhone from "@/assets/svgs/LadyWithPhone";
 import PhoneIcon from "@/assets/svgs/PhoneIcon";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
+import { setBottomSheetContentType, setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
 import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
 // import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
@@ -22,7 +22,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -46,11 +46,11 @@ export default function Login() {
   const handleOtpSent = (method: "phone" | "email") => {
     if (method === "phone" && mobile.length === 10) {
       console.log("OTP sent to phone:", mobile);
-      dispatch(setBottomSheetIndex(1));
+      dispatch(setBottomSheetContentType('otpVerify'));
       Keyboard.dismiss();
     } else if (method === "email" && isValidEmail(email)) {
       console.log("OTP sent to email:", email);
-      dispatch(setBottomSheetIndex(1));
+      dispatch(setBottomSheetContentType('otpVerify'));
       Keyboard.dismiss();
     } else {
       console.error("Invalid input for OTP sending");
@@ -59,129 +59,129 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss} accessible={false}
-        >
-          <View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ flex: 1, alignItems: "center" }}>
             <View style={{ marginTop: 40 }}>
-            {loginMethod === "phone" ? (
-              <LadyWithPhone width={250} height={200} />
-            ) : (
-              <LadyWithEmail width={250} height={200} />
-            )}
-          </View>
-          <Text style={styles.header}>
-            {loginMethod === "phone" ? "Enter Mobile Number" : "Enter Email"}
-          </Text>
-          <View
-            style={[
-              styles.inputContainer,
-              isFocused && { borderColor: colors.border },
-            ]}
-          >
-            {loginMethod === "phone" && (
-              <Text style={styles.countryCode}>+91 🇮🇳</Text>
-            )}
-            {loginMethod === "phone" ? (
-              <TextInput
-                style={styles.input}
-                placeholder="Enter mobile number"
-                keyboardType="phone-pad"
-                value={mobile}
-                onChangeText={setMobile}
-                maxLength={10}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                autoFocus={!email && !mobile}
-              />
-            ) : (
-              <TextInput
-                style={styles.input}
-                placeholder="Enter email address"
-                keyboardType="email-address"
-                editable={loginMethod === "email"}
-                value={email}
-                onChangeText={setEmail}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                autoFocus={!email && !mobile}
-              />
-            )}
-          </View>
-
-          <View style={styles.otpButton}>
-            {loginMethod === "phone" ? (
-              <PrimaryButton
-                label="SEND OTP"
-                onPress={() => handleOtpSent("phone")}
-                disabled={mobile.length === 10 ? false : true}
-              />
-            ) : (
-              <PrimaryButton
-                label="SEND OTP"
-                onPress={() => handleOtpSent("email")}
-                disabled={!email || !isValidEmail(email)}
-              />
-            )}
-          </View>
-
-          <Pressable
-            style={styles.checkboxContainer}
-            onPress={() => setWhatsapp(!whatsapp)}
-          >
-            <Checkbox
-              value={whatsapp}
-              onValueChange={setWhatsapp}
-              color={whatsapp ? colors.primary : undefined}
-              style={{
-                borderWidth: 1,
-                width: 20,
-                height: 20,
-                borderColor: colors.border,
-              }}
-            />
-            <Text style={styles.checkboxLabel}>
-              I agree to receive updates over whatsapp
+              {loginMethod === "phone" ? (
+                <LadyWithPhone width={250} height={200} />
+              ) : (
+                <LadyWithEmail width={250} height={200} />
+              )}
+            </View>
+            <Text style={styles.header}>
+              {loginMethod === "phone" ? "Enter Mobile Number" : "Enter Email"}
             </Text>
-          </Pressable>
+            <View
+              style={[
+                styles.inputContainer,
+                isFocused && { borderColor: colors.border },
+              ]}
+            >
+              {loginMethod === "phone" && (
+                <Text style={styles.countryCode}>+91 🇮🇳</Text>
+              )}
+              {loginMethod === "phone" ? (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter mobile number"
+                  keyboardType="phone-pad"
+                  value={mobile}
+                  onChangeText={setMobile}
+                  maxLength={10}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  autoFocus={!email && !mobile}
+                />
+              ) : (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter email address"
+                  keyboardType="email-address"
+                  editable={loginMethod === "email"}
+                  value={email}
+                  onChangeText={setEmail}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  autoFocus={!email && !mobile}
+                />
+              )}
+            </View>
 
-          <Text style={styles.terms}>
-            By signing up, you agree to the{" "}
-            <Text style={styles.link}>Terms Of Service</Text> and{" "}
-            <Text style={styles.link}>Privacy Policy</Text>
-          </Text>
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.or}>Or</Text>
-            <View style={styles.divider} />
-          </View>
+            <View style={styles.otpButton}>
+              {loginMethod === "phone" ? (
+                <PrimaryButton
+                  label="SEND OTP"
+                  onPress={() => handleOtpSent("phone")}
+                  disabled={mobile.length === 10 ? false : true}
+                />
+              ) : (
+                <PrimaryButton
+                  label="SEND OTP"
+                  onPress={() => handleOtpSent("email")}
+                  disabled={!email || !isValidEmail(email)}
+                />
+              )}
+            </View>
 
-          <View style={styles.socialContainer}>
-            <View style={styles.socialButtonContainer}>
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={toggleLoginMethod}
-              >
-                {loginMethod === "phone" ? (
-                  <EmailIcon width={24} height={24} />
-                ) : (
-                  <PhoneIcon width={24} height={24} />
-                )}
-              </TouchableOpacity>
-              <Text style={styles.socialText}>
-                {loginMethod === "phone" ? "Email" : "OTP"}
+            <Pressable
+              style={styles.checkboxContainer}
+              onPress={() => setWhatsapp(!whatsapp)}
+            >
+              <Checkbox
+                value={whatsapp}
+                onValueChange={setWhatsapp}
+                color={whatsapp ? colors.primary : undefined}
+                style={{
+                  borderWidth: 1,
+                  width: 20,
+                  height: 20,
+                  borderColor: colors.border,
+                }}
+              />
+              <Text style={styles.checkboxLabel}>
+                I agree to receive updates over whatsapp
               </Text>
+            </Pressable>
+
+            <Text style={styles.terms}>
+              By signing up, you agree to the{" "}
+              <Text style={styles.link}>Terms Of Service</Text> and{" "}
+              <Text style={styles.link}>Privacy Policy</Text>
+            </Text>
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.or}>Or</Text>
+              <View style={styles.divider} />
             </View>
 
-            <View style={styles.socialButtonContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <GoogleIcon width={24} height={24} />
-              </TouchableOpacity>
-              <Text style={styles.socialText}>Google</Text>
+            <View style={styles.socialContainer}>
+              <View style={styles.socialButtonContainer}>
+                <TouchableOpacity
+                  style={styles.socialButton}
+                  onPress={toggleLoginMethod}
+                >
+                  {loginMethod === "phone" ? (
+                    <EmailIcon width={24} height={24} />
+                  ) : (
+                    <PhoneIcon width={24} height={24} />
+                  )}
+                </TouchableOpacity>
+                <Text style={styles.socialText}>
+                  {loginMethod === "phone" ? "Email" : "OTP"}
+                </Text>
+              </View>
+
+              <View style={styles.socialButtonContainer}>
+                <TouchableOpacity style={styles.socialButton}>
+                  <GoogleIcon width={24} height={24} />
+                </TouchableOpacity>
+                <Text style={styles.socialText}>Google</Text>
+              </View>
             </View>
-          </View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
