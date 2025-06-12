@@ -1,6 +1,8 @@
 import { useAppSelector } from "@/hooks/hooks";
 import { TColors } from "@/types/theme";
+import { BottomSheetTextInput, TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
@@ -12,8 +14,6 @@ import {
   View,
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
-import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
-import { useRouter } from "expo-router";
 
 const OTP_LENGTH = 5;
 
@@ -58,17 +58,19 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   };
 
   useEffect(() => {
-    if (bottomSheetIndex !== -1) {
+  if (bottomSheetIndex !== -1) {
+    const timeout = setTimeout(() => {
       inputRefs.current[0]?.focus();
-    }
+    }, 250); 
 
-    return () => {
-      setOtp(Array(OTP_LENGTH).fill(""));
-    };
-  }, [bottomSheetIndex]);
+    return () => clearTimeout(timeout);
+  } else {
+    setOtp(Array(OTP_LENGTH).fill(""));
+  }
+}, [bottomSheetIndex]);
+
 
   const handleOTPVerify = () => {
-    // Handle OTP verification logic here
     console.log("OTP Verified:", otp.join(""));
     closeBottomSheet();
     navigate.push("/(profile)/profileForm");
@@ -92,7 +94,7 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
 
         <View style={styles.otpBoxContainer}>
           {Array.from({ length: OTP_LENGTH }).map((_, index) => (
-            <TextInput
+            <BottomSheetTextInput
               key={index}
               ref={(ref) => {
                 inputRefs.current[index] = ref;

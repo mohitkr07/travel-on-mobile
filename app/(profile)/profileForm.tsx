@@ -1,113 +1,68 @@
-import React, { useState } from "react";
+import { TColors } from "@/types/theme";
+import { useTheme } from "@react-navigation/native";
+import React from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
-  Text,
   TouchableWithoutFeedback,
-  View,
-  TextInput,
-  Button,
   Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProfileForm = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [gender, setGender] = useState("");
-  const [dob, setDob] = useState("");
+  const { colors } = useTheme();
+  const styles = getStyles(colors as TColors);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <TouchableWithoutFeedback>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <View style={{ flex: 1, padding: 24 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 4 }}>
-              Complete your profile
-            </Text>
-            <Text style={{ color: "#888", marginBottom: 24 }}>
-              what would you like your buddies to call you?
-            </Text>
-
-            <Text style={{ marginBottom: 4 }}>First Name *</Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 16,
-              }}
-              placeholder="First Name"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-
-            <Text style={{ marginBottom: 4 }}>Last Name</Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 16,
-              }}
-              placeholder="Last Name"
-              value={lastName}
-              onChangeText={setLastName}
-            />
-
-            <Text style={{ marginBottom: 4 }}>Gender</Text>
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 8,
-                marginBottom: 16,
-                overflow: "hidden",
-              }}
-            >
-              <Picker
-                selectedValue={gender}
-                onValueChange={setGender}
-                style={{ height: 44 }}
-              >
-                <Picker.Item label="Select Gender" value="" />
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
-                <Picker.Item label="Other" value="other" />
-              </Picker>
-            </View>
-
-            <Text style={{ marginBottom: 4 }}>Date of Birth</Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 24,
-              }}
-              placeholder="YYYY-MM-DD"
-              value={dob}
-              onChangeText={setDob}
-              keyboardType="numeric"
-            />
-
-            <Button
-              title="NEXT"
-              onPress={() => {}}
-              disabled={!firstName}
-              color="#ccc"
-            />
+  <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{ flex: 1 }}>
+          <View>
+            <Text style={styles.label}>First Name</Text>
+            <TextInput style={styles.input} placeholder="Your First Name" />
           </View>
-        </KeyboardAvoidingView>
+          <View>
+            <Text style={styles.label}>Last Name</Text>
+            <TextInput style={styles.input} placeholder="Your Last Name" />
+          </View>
+        </View>
       </TouchableWithoutFeedback>
-    </SafeAreaView>
-  );
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+);
+
 };
 
 export default ProfileForm;
+
+const getStyles = (colors: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 20,
+    },
+    label: {
+      fontSize: 16,
+      color: colors.textLight1,
+      // marginBottom: 8,
+    },
+    input: {
+      backgroundColor: colors.background,
+      borderRadius: 16,
+      marginTop: 8,
+      marginBottom: 12,
+      paddingHorizontal: 12,
+      height: 54,
+      borderColor: colors.border,
+      borderWidth: 1,
+    },
+  });

@@ -8,19 +8,21 @@ import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
 import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
-import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
+// import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
 import { Checkbox } from "expo-checkbox";
 import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  TouchableWithoutFeedback
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -57,12 +59,13 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <TouchableWithoutFeedback
-          style={[{ flex: 1, alignItems: "center" }]}
-          onPress={Keyboard.dismiss}
+          onPress={Keyboard.dismiss} accessible={false}
         >
-          <View style={{ marginTop: 40 }}>
+          <View>
+            <View style={{ marginTop: 40 }}>
             {loginMethod === "phone" ? (
               <LadyWithPhone width={250} height={200} />
             ) : (
@@ -178,6 +181,7 @@ export default function Login() {
               </TouchableOpacity>
               <Text style={styles.socialText}>Google</Text>
             </View>
+          </View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

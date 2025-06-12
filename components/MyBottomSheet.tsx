@@ -4,7 +4,7 @@ import {
 } from "@/redux/slices/appSlice";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, BackHandler, Keyboard } from "react-native";
+import { BackHandler, Keyboard } from "react-native";
 import OTPVerify from "./auth/OTPVerify";
 
 const MyBottomSheet = () => {
@@ -29,6 +29,14 @@ const MyBottomSheet = () => {
     return () => backHandler.remove();
   }, [bottomSheetIndex]);
 
+  useEffect(() => {
+    if (bottomSheetIndex !== -1) {
+      bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
+    }
+  }, [bottomSheetIndex]);
+
   const handleSheetChanges = (index: number) => {
     console.log("handleSheetChanges", index);
     // this index is the updated index of the bottom sheet
@@ -42,39 +50,24 @@ const MyBottomSheet = () => {
     <BottomSheet
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
-      index={bottomSheetIndex}
-      snapPoints={["65%"]}
+      index={-1}
       enablePanDownToClose={true}
       handleIndicatorStyle={{ display: "none" }}
       enableDynamicSizing={true}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
-      maxDynamicContentSize={500}
+      maxDynamicContentSize={1000}
     >
       <BottomSheetView
         style={{
           flex: 1,
-          // padding: 36,
           alignItems: "center",
         }}
       >
-        {/* <Text>Awesome 🎉</Text> */}
-        <OTPVerify closeBottomSheet={() => bottomSheetRef?.current?.close()} />
+          <OTPVerify closeBottomSheet={() => bottomSheetRef?.current?.close()} />
       </BottomSheetView>
     </BottomSheet>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "grey",
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 36,
-    alignItems: "center",
-  },
-});
 
 export default MyBottomSheet;

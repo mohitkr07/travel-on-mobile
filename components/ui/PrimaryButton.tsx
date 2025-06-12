@@ -34,7 +34,7 @@ export default PrimaryButton;
 const getStyles = (colors: TColors) =>
   StyleSheet.create({
     button: {
-      backgroundColor: "#1FA1CC",
+      backgroundColor: "#166EBA",
       borderRadius: 16,
       height: 54,
       width: "100%",
@@ -43,7 +43,7 @@ const getStyles = (colors: TColors) =>
     buttonParent: {
       backgroundColor: colors.primary,
       width: "100%",
-      height: "93%",
+      height: "92%",
       borderTopLeftRadius: 16,
       borderTopRightRadius: 16,
       borderBottomLeftRadius: 16,
