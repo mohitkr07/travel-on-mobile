@@ -1,17 +1,21 @@
-import { useAppSelector } from "@/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { verifyOtpViaEmail, verifyOtpViaPhone } from "@/networking/auth";
+import { setErrorMsg } from "@/redux/slices/appSlice";
 import { TColors } from "@/types/theme";
-import { BottomSheetTextInput, TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetTextInput,
+  TouchableWithoutFeedback,
+} from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Keyboard,
-    KeyboardAvoidingView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
 
@@ -21,8 +25,13 @@ type OTPVerifyProps = {
   closeBottomSheet: () => void;
 };
 
+type OTPPayload =
+  | { phone: string; otp: string }
+  | { email: string; otp: string };
+
 const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
@@ -30,6 +39,7 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   const { bottomSheetIndex, loginMethod } = useAppSelector(
     (state) => state.app
   );
+  const { mobile, email, verifyOtpLoading } = useAppSelector((state) => state.auth);
 
   const handleChange = (text: string, index: number) => {
     const newOtp = [...otp];
@@ -58,69 +68,90 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   };
 
   useEffect(() => {
-  if (bottomSheetIndex !== -1) {
-    const timeout = setTimeout(() => {
-      inputRefs.current[0]?.focus();
-    }, 300); 
+    if (bottomSheetIndex !== -1) {
+      const timeout = setTimeout(() => {
+        inputRefs.current[0]?.focus();
+      }, 300);
 
-    return () => clearTimeout(timeout);
-  } else {
-    setOtp(Array(OTP_LENGTH).fill(""));
-  }
-}, [bottomSheetIndex]);
+      return () => clearTimeout(timeout);
+    } else {
+      setOtp(Array(OTP_LENGTH).fill(""));
+    }
+  }, [bottomSheetIndex]);
 
+  const handleOTPVerify = (): void => {
+    const enteredOTP = otp.join("");
+    console.log("OTP Verified:", enteredOTP);
 
-  const handleOTPVerify = () => {
-    console.log("OTP Verified:", otp.join(""));
-    closeBottomSheet();
-    router.push("/(profile)/profileForm");
+    let action: any;
+    let payload: OTPPayload;
+
+    if (loginMethod === "phone") {
+      payload = { phone: mobile, otp: enteredOTP };
+      action = verifyOtpViaPhone(payload);
+    } else {
+      payload = { email, otp: enteredOTP };
+      action = verifyOtpViaEmail(payload);
+    }
+
+    dispatch(action)
+      .unwrap()
+      .then(() => {
+        console.log("OTP verification successful");
+        closeBottomSheet();
+        router.push("/(profile)/profileForm");
+      })
+      .catch((error: unknown) => {
+        dispatch(setErrorMsg("Invalid OTP"));
+        console.error("OTP verification failed:", error);
+      });
   };
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView >
+    <TouchableWithoutFeedback accessible={false}>
+      <KeyboardAvoidingView>
         <View style={styles.container}>
-        <Text style={styles.title}>You&apos;re Almost There!</Text>
+          <Text style={styles.title}>You&apos;re Almost There!</Text>
 
-        <View style={styles.phoneContainer}>
-          <Text style={styles.otpText}>Enter OTP</Text>
-          <TouchableOpacity activeOpacity={0.5} onPress={handleEditContact}>
-            <Text style={styles.phone}>
-              {loginMethod === "phone"
-                ? "+917878441090"
-                : "mo2002hit@gmail.com"}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.phoneContainer}>
+            <Text style={styles.otpText}>Enter OTP</Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={handleEditContact}>
+              <Text style={styles.phone}>
+                {loginMethod === "phone" ? `+91 ${mobile}` : email}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.otpBoxContainer}>
+            {Array.from({ length: OTP_LENGTH }).map((_, index) => (
+              <BottomSheetTextInput
+                key={index}
+                ref={(ref) => {
+                  inputRefs.current[index] = ref;
+                }}
+                style={styles.otpBox}
+                keyboardType="numeric"
+                maxLength={1}
+                value={otp[index]}
+                onChangeText={(text) => handleChange(text, index)}
+                onFocus={() => setFocusedIndex(index)}
+                onKeyPress={(e) => handleKeyPress(e, index)}
+                returnKeyType={index === OTP_LENGTH - 1 ? "done" : "next"}
+                blurOnSubmit={index === OTP_LENGTH - 1}
+                autoFocus={index === 0 && bottomSheetIndex !== -1}
+                selectTextOnFocus={true}
+              />
+            ))}
+          </View>
+
+          <PrimaryButton
+            label="Verify OTP"
+            onPress={handleOTPVerify}
+            style={{ marginTop: 20 }}
+            // disabled={false}
+            loading={verifyOtpLoading}
+          />
         </View>
-
-        <View style={styles.otpBoxContainer}>
-          {Array.from({ length: OTP_LENGTH }).map((_, index) => (
-            <BottomSheetTextInput
-              key={index}
-              ref={(ref) => {
-                inputRefs.current[index] = ref;
-              }}
-              style={styles.otpBox}
-              keyboardType="numeric"
-              maxLength={1}
-              value={otp[index]}
-              onChangeText={(text) => handleChange(text, index)}
-              onFocus={() => setFocusedIndex(index)}
-              onKeyPress={(e) => handleKeyPress(e, index)}
-              returnKeyType={index === OTP_LENGTH - 1 ? "done" : "next"}
-              blurOnSubmit={index === OTP_LENGTH - 1}
-              autoFocus={index === 0 && bottomSheetIndex !== -1}
-              selectTextOnFocus={true}
-            />
-          ))}
-        </View>
-
-        <PrimaryButton
-          label="Verify OTP"
-          onPress={handleOTPVerify}
-          style={{ marginTop: 20 }}
-          // disabled={false}
-        />
-      </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

@@ -1,4 +1,5 @@
 import { requestOtpViaEmail, verifyOtpViaEmail } from "@/networking/auth";
+import { saveTokens } from "@/utils/tokenStorage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const API_STATUS = {
@@ -14,6 +15,8 @@ type AuthState = {
   isAuthenticated: boolean;
   accessToken?: string | null;
   refreshToken?: string | null;
+  mobile: string;
+  email: string;
   user?: {
     id: string;
     email: string;
@@ -30,6 +33,8 @@ const initialState: AuthState = {
   accessToken: null,
   refreshToken: null,
   user: null,
+  mobile: "",
+  email: "",
   requestOtpLoading: API_STATUS.IDLE,
   verifyOtpLoading: API_STATUS.IDLE,
 };
@@ -38,6 +43,12 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setMobile: (state, action: PayloadAction<string>) => {
+      state.mobile = action.payload;
+    },
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    },
     loginSuccess: (
       state,
       action: PayloadAction<{
@@ -75,7 +86,9 @@ export const authSlice = createSlice({
       })
       .addCase(verifyOtpViaEmail.fulfilled, (state, action) => {
         state.verifyOtpLoading = API_STATUS.SUCCESS;
-        console.log(action.payload);
+        const { accessToken, refreshToken } = action.payload;
+        saveTokens(accessToken, refreshToken);
+        state.isAuthenticated = true;
       })
       .addCase(verifyOtpViaEmail.rejected, (state, action) => {
         state.verifyOtpLoading = API_STATUS.ERROR;
@@ -83,5 +96,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { setEmail, setMobile, loginSuccess, logout } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,5 @@
 import DimmingOverlay from "@/components/DimmingOverlay";
+import ErrorChip from "@/components/general/ErrorChip";
 import MyBottomSheet from "@/components/MyBottomSheet";
 import { MyDarkTheme, MyLightTheme } from "@/constants/Theme";
 import { store } from "@/redux/store";
@@ -45,6 +46,7 @@ export default function RootLayout() {
             <StatusBar style="auto" />
             <DimmingOverlay />
             <MyBottomSheet />
+            <ErrorChip/>
           </ThemeProvider>
         </Provider>
       </GestureHandlerRootView>

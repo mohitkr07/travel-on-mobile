@@ -7,7 +7,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { requestOtpViaEmail, requestOtpViaPhone } from "@/networking/auth";
 import { setBottomSheetContentType, setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
-import { API_STATUS } from "@/redux/slices/authSlice";
+import { setEmail, setMobile } from "@/redux/slices/authSlice";
 import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
 // import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
@@ -32,18 +32,18 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
-  const [mobile, setMobile] = useState("");
-  const [email, setEmail] = useState("");
+  // const [mobile, setMobile] = useState("");
+  // const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState(false);
   // const [isLoginViaPhone, setLoginMethod] = useState(true);
   const { loginMethod } = useAppSelector((state) => state.app);
-  const { requestOtpLoading } = useAppSelector((state) => state.auth);
+  const { requestOtpLoading, email, mobile } = useAppSelector((state) => state.auth);
   const [isFocused, setIsFocused] = useState(false);
 
   const toggleLoginMethod = () => {
     dispatch(setLoginMethod(loginMethod === "phone" ? "email" : "phone"));
-    setMobile("");
-    setEmail("");
+    dispatch(setEmail(""))
+    dispatch(setMobile(""))
   };
   
   const handleOtpSent = (method: "phone" | "email") => {
@@ -52,14 +52,28 @@ export default function Login() {
       dispatch(setBottomSheetContentType('otpVerify'));
       Keyboard.dismiss();
     } else if (method === "email" && isValidEmail(email)) {
-      dispatch(requestOtpViaEmail(email)).then(() => {
+      dispatch(requestOtpViaEmail(email))
+      .unwrap()
+      .then((res) => {
         dispatch(setBottomSheetContentType('otpVerify'));
       })
+      .catch((error) => {
+        console.error("Error requesting OTP:", error);
+      });
       Keyboard.dismiss();
     } else {
       console.error("Invalid input for OTP sending");
     }
   };
+
+  const handleChangeText = (text: string) => {
+    if (loginMethod === "phone") {
+      dispatch(setMobile(text));
+    }
+    if (loginMethod === "email") {
+      dispatch(setEmail(text));
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -94,7 +108,7 @@ export default function Login() {
                   placeholder="Enter mobile number"
                   keyboardType="phone-pad"
                   value={mobile}
-                  onChangeText={setMobile}
+                  onChangeText={handleChangeText}
                   maxLength={10}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
@@ -107,7 +121,7 @@ export default function Login() {
                   keyboardType="email-address"
                   editable={loginMethod === "email"}
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={handleChangeText}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   autoFocus={!email && !mobile}

@@ -1,7 +1,6 @@
 import Welcome1 from "@/assets/svgs/Welcome1";
 import Welcome2 from "@/assets/svgs/Welcome2";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-import { BASE_URL } from "@/constants/constants";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
