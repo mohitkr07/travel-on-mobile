@@ -1,6 +1,7 @@
 import Welcome1 from "@/assets/svgs/Welcome1";
 import Welcome2 from "@/assets/svgs/Welcome2";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import { BASE_URL } from "@/constants/constants";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
@@ -15,7 +16,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TripSurvey from "./(profile)/tripSurvey";
 
 function WelcomeFirst() {
   const { colors } = useTheme();
@@ -73,33 +73,33 @@ const Welcome = () => {
   };
 
   return (
-    <TripSurvey />
-    // <SafeAreaView style={styles.container}>
-    //   <ScrollView
-    //     ref={scrollRef}
-    //     horizontal
-    //     pagingEnabled
-    //     showsHorizontalScrollIndicator={false}
-    //     onScroll={handleScroll}
-    //     scrollEventThrottle={16}
-    //   >
-    //     <WelcomeFirst />
-    //     <WelcomeSecond />
-    //   </ScrollView>
+    // <TripSurvey />
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        <WelcomeFirst />
+        <WelcomeSecond />
+      </ScrollView>
 
-    //   {/* Dots Indicator */}
-    //   <View style={styles.dotsContainer}>
-    //     {[0, 1].map((i) => (
-    //       <View key={i} style={[styles.dot, page === i && styles.dotActive]} />
-    //     ))}
-    //   </View>
+      {/* Dots Indicator */}
+      <View style={styles.dotsContainer}>
+        {[0, 1].map((i) => (
+          <View key={i} style={[styles.dot, page === i && styles.dotActive]} />
+        ))}
+      </View>
 
-    //   {/* Bottom Section */}
-    //   <View style={styles.bottomSection}>
-    //     <Text style={styles.bottomText}>Let&apos;s start exploring.</Text>
-    //     <PrimaryButton label="PLAN. POST. PACK" onPress={handlePlanPostPack} />
-    //   </View>
-    // </SafeAreaView>
+      {/* Bottom Section */}
+      <View style={styles.bottomSection}>
+        <Text style={styles.bottomText}>Let&apos;s start exploring.</Text>
+        <PrimaryButton label="PLAN. POST. PACK" onPress={handlePlanPostPack} />
+      </View>
+    </SafeAreaView>
   );
 };
 

@@ -11,7 +11,7 @@ type BottomSheetContent = 'otpVerify' | 'emailVerify' | 'profilePic' | 'tripSurv
 const initialState: AppState = {
     bottomSheetContent: 'otpVerify',
     bottomSheetIndex: -1,
-    loginMethod: 'phone',
+    loginMethod: 'email',
 }
 
 export const appSlice = createSlice({

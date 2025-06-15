@@ -4,8 +4,16 @@ import TrollyBag from "@/assets/svgs/TrollyBag";
 import VibeWith from "@/assets/svgs/VibeWith";
 import CustomHeader from "@/components/ui/CustomHeader";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-import { useAppDispatch } from "@/hooks/hooks";
-import { setBottomSheetContentType, setBottomSheetIndex } from "@/redux/slices/appSlice";
+import { CHIPS_OPTIONS } from "@/constants/helper";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import {
+  setBottomSheetContentType,
+  setBottomSheetIndex,
+} from "@/redux/slices/appSlice";
+import {
+  CHIPS_SELECTORS,
+  setActiveChipSelector,
+} from "@/redux/slices/tripSurveySlice";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
@@ -26,22 +34,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const tripTypes = [
   {
-    key: "tripType",
+    key: CHIPS_SELECTORS[0],
     label: "Trip Type",
-    icon: <TrollyBag />, // Replace with your icon/image path
+    icon: <TrollyBag />,
   },
   {
-    key: "companion",
+    key: CHIPS_SELECTORS[1],
     label: "Companion",
     icon: <Companion />,
   },
   {
-    key: "vibe",
-    label: "Vibe",
-    icon: <VibeWith />,
-  },
-  {
-    key: "vibe2",
+    key: CHIPS_SELECTORS[2],
     label: "Vibe",
     icon: <VibeWith />,
   },
@@ -52,10 +55,26 @@ const TripSurvey: React.FC = () => {
   const { colors } = useTheme() as unknown as { colors: TColors };
   const styles = getStyles(colors as TColors);
   const dispatch = useAppDispatch();
+  const { selectedCompanionsKeys, selectedTripTypesKeys, selectedVibesKeys } =
+    useAppSelector((state) => state.tripSurvey);
 
   const handleCardPress = (key: string) => {
     setSelected(key);
-    dispatch(setBottomSheetContentType('tripSurvey'));
+    dispatch(setActiveChipSelector(key));
+    dispatch(setBottomSheetContentType("tripSurvey"));
+  };
+
+  const getBackgroundColor = () =>{
+    switch (selected) {
+      case CHIPS_SELECTORS[0]:
+        return selectedTripTypesKeys.length > 0 ? colors.primary : colors.card;
+      case CHIPS_SELECTORS[1]:
+        return selectedCompanionsKeys.length > 0 ? colors.primary : colors.card;
+      case CHIPS_SELECTORS[2]:
+        return selectedVibesKeys.length > 0 ? colors.primary : colors.card;
+      default:
+        return colors.card;
+    }
   }
 
   return (
@@ -67,15 +86,13 @@ const TripSurvey: React.FC = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.innerContainer}>
-            {/* write the code here for the trip type cards */}
-
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
                 gap: 16,
-                flexWrap: 'wrap',
-                flex: 1
+                flexWrap: "wrap",
+                flex: 1,
               }}
             >
               {tripTypes.map((item) => (
@@ -99,7 +116,7 @@ const TripSurvey: React.FC = () => {
                       shadowRadius: 2,
                       elevation: 0.5,
                       gap: 5,
-                      aspectRatio: 1/1
+                      aspectRatio: 1 / 1,
                     },
                   ]}
                 >

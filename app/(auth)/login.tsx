@@ -5,7 +5,9 @@ import LadyWithPhone from "@/assets/svgs/LadyWithPhone";
 import PhoneIcon from "@/assets/svgs/PhoneIcon";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { requestOtpViaEmail, requestOtpViaPhone } from "@/networking/auth";
 import { setBottomSheetContentType, setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
+import { API_STATUS } from "@/redux/slices/authSlice";
 import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
 // import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
@@ -35,6 +37,7 @@ export default function Login() {
   const [whatsapp, setWhatsapp] = useState(false);
   // const [isLoginViaPhone, setLoginMethod] = useState(true);
   const { loginMethod } = useAppSelector((state) => state.app);
+  const { requestOtpLoading } = useAppSelector((state) => state.auth);
   const [isFocused, setIsFocused] = useState(false);
 
   const toggleLoginMethod = () => {
@@ -42,15 +45,16 @@ export default function Login() {
     setMobile("");
     setEmail("");
   };
-
+  
   const handleOtpSent = (method: "phone" | "email") => {
     if (method === "phone" && mobile.length === 10) {
-      console.log("OTP sent to phone:", mobile);
+      dispatch(requestOtpViaPhone(mobile))
       dispatch(setBottomSheetContentType('otpVerify'));
       Keyboard.dismiss();
     } else if (method === "email" && isValidEmail(email)) {
-      console.log("OTP sent to email:", email);
-      dispatch(setBottomSheetContentType('otpVerify'));
+      dispatch(requestOtpViaEmail(email)).then(() => {
+        dispatch(setBottomSheetContentType('otpVerify'));
+      })
       Keyboard.dismiss();
     } else {
       console.error("Invalid input for OTP sending");
@@ -123,6 +127,7 @@ export default function Login() {
                   label="SEND OTP"
                   onPress={() => handleOtpSent("email")}
                   disabled={!email || !isValidEmail(email)}
+                  loading={requestOtpLoading}
                 />
               )}
             </View>

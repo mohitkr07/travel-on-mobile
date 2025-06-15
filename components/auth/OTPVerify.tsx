@@ -61,7 +61,7 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   if (bottomSheetIndex !== -1) {
     const timeout = setTimeout(() => {
       inputRefs.current[0]?.focus();
-    }, 250); 
+    }, 300); 
 
     return () => clearTimeout(timeout);
   } else {

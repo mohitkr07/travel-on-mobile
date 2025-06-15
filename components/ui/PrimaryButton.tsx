@@ -1,32 +1,50 @@
+import { API_STATUS } from "@/redux/slices/authSlice";
 import { TPrimaryButton } from "@/types/components";
 import { TColors } from "@/types/theme";
 import { responsiveFontSize } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const PrimaryButton = ({ label, onPress, disabled, width, style }: TPrimaryButton) => {
+const PrimaryButton = ({
+  label,
+  onPress,
+  disabled,
+  width,
+  style,
+  loading,
+}: TPrimaryButton) => {
   const { colors } = useTheme();
   const typedColors = colors as TColors;
   const styles = getStyles(typedColors);
 
   return (
-    <View style={[{ width: width || "100%"}, style]}>
+    <View style={[{ width: width || "100%" }, style]}>
       <TouchableOpacity
-      style={[styles.button, disabled && { backgroundColor: "transparent" }]}
-      onPress={onPress}
-      disabled={disabled}
-      activeOpacity={0.8}
-    >
-      <View
-        style={[
-          styles.buttonParent,
-          disabled && { backgroundColor: typedColors.backgroundDisabled },
-        ]}
+        style={[styles.button, disabled && { backgroundColor: "transparent" }]}
+        onPress={onPress}
+        disabled={disabled}
+        activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>{label}</Text>
-      </View>
-    </TouchableOpacity>
+        <View
+          style={[
+            styles.buttonParent,
+            disabled && { backgroundColor: typedColors.backgroundDisabled },
+          ]}
+        >
+          {loading === API_STATUS.LOADING && !disabled ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>{label}</Text>
+          )}
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

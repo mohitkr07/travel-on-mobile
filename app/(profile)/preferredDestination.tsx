@@ -113,7 +113,7 @@ const PrefferedDestination: React.FC = () => {
             </ScrollView>
             <PrimaryButton
               label="Next"
-              onPress={() => console.log("next")}
+              onPress={() => router.push("/tripSurvey")}
               style={{ marginBottom: 15, marginTop: 10 }}
             />
           </View>

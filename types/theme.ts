@@ -19,6 +19,7 @@ type TCustomTheme = {
   colors: {
     primary: string;
     background: string;
+    themeBackground: string;
     card: string;
     text: string;
     border: string;

@@ -3,13 +3,7 @@ import React from 'react'
 
 const ProfileLayout = () => {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }} />
   )
 }
 
