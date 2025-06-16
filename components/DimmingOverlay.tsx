@@ -17,7 +17,10 @@ const DimmingOverlay = () => {
   return (
     <Animated.View
       pointerEvents={bottomSheetIndex >= 0 ? "auto" : "none"}
-      style={[StyleSheet.absoluteFill, { backgroundColor: "black", opacity: opacityAnim }]}
+      style={[
+        StyleSheet.absoluteFill,
+        { backgroundColor: "black", opacity: opacityAnim },
+      ]}
     />
   );
 };

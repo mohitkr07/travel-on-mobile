@@ -18,6 +18,7 @@ import {
   View
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
+import { OTPPayload } from "@/types/constantsTypes";
 
 const OTP_LENGTH = 5;
 
@@ -25,9 +26,7 @@ type OTPVerifyProps = {
   closeBottomSheet: () => void;
 };
 
-type OTPPayload =
-  | { phone: string; otp: string }
-  | { email: string; otp: string };
+
 
 const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
   const router = useRouter();

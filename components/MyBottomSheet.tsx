@@ -1,7 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import {
-  setBottomSheetIndex,
-} from "@/redux/slices/appSlice";
+import { setBottomSheetIndex } from "@/redux/slices/appSlice";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { useEffect, useRef } from "react";
 import { BackHandler, Keyboard } from "react-native";
@@ -11,16 +9,18 @@ import TripTypeChipSelector from "./TripTypeChipSelector";
 const MyBottomSheet = () => {
   const dispatch = useAppDispatch();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { bottomSheetContent, bottomSheetIndex } = useAppSelector((state) => state.app);
+  const { bottomSheetContent, bottomSheetIndex } = useAppSelector(
+    (state) => state.app
+  );
   const [showHandleIndicator, setShowHandleIndicator] = React.useState(true);
-  
+
   useEffect(() => {
     const backAction = () => {
       if (bottomSheetIndex !== -1) {
         bottomSheetRef.current?.close();
-        return true; // Prevent default back behavior
+        return true;
       }
-      return false; // Allow default back behavior
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -41,7 +41,6 @@ const MyBottomSheet = () => {
 
   const handleSheetChanges = (index: number) => {
     console.log("handleSheetChanges", index);
-    // this index is the updated index of the bottom sheet
     if (index === -1) {
       Keyboard.dismiss();
       dispatch(setBottomSheetIndex(-1));
@@ -49,23 +48,27 @@ const MyBottomSheet = () => {
   };
 
   useEffect(() => {
-    if (bottomSheetContent === 'otpVerify') {
+    if (bottomSheetContent === "otpVerify") {
       setShowHandleIndicator(false);
     } else {
       setShowHandleIndicator(true);
     }
   }, [bottomSheetContent, bottomSheetIndex]);
 
-  const bottomSheetContentComponent = () =>{
+  const bottomSheetContentComponent = () => {
     switch (bottomSheetContent) {
       case "otpVerify":
-        return <OTPVerify closeBottomSheet={() => bottomSheetRef?.current?.close()} />;
-      case 'tripSurvey': 
-        return <TripTypeChipSelector />; 
+        return (
+          <OTPVerify
+            closeBottomSheet={() => bottomSheetRef?.current?.close()}
+          />
+        );
+      case "tripSurvey":
+        return <TripTypeChipSelector />;
       default:
         return null;
     }
-  }
+  };
 
   return (
     <BottomSheet
@@ -73,7 +76,7 @@ const MyBottomSheet = () => {
       onChange={handleSheetChanges}
       index={-1}
       enablePanDownToClose={true}
-      handleIndicatorStyle={{display: showHandleIndicator ? 'flex' : 'none'}}
+      handleIndicatorStyle={{ display: showHandleIndicator ? "flex" : "none" }}
       enableDynamicSizing={true}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
@@ -85,7 +88,7 @@ const MyBottomSheet = () => {
           alignItems: "center",
         }}
       >
-      { bottomSheetContentComponent()}
+        {bottomSheetContentComponent()}
       </BottomSheetView>
     </BottomSheet>
   );

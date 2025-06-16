@@ -6,11 +6,10 @@ import PhoneIcon from "@/assets/svgs/PhoneIcon";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { requestOtpViaEmail, requestOtpViaPhone } from "@/networking/auth";
-import { setBottomSheetContentType, setBottomSheetIndex, setLoginMethod } from "@/redux/slices/appSlice";
+import { setBottomSheetContentType, setLoginMethod } from "@/redux/slices/appSlice";
 import { setEmail, setMobile } from "@/redux/slices/authSlice";
 import { TColors } from "@/types/theme";
 import { isValidEmail } from "@/utils/validation";
-// import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
 import { Checkbox } from "expo-checkbox";
 import React, { useState } from "react";
@@ -32,10 +31,7 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
-  // const [mobile, setMobile] = useState("");
-  // const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState(false);
-  // const [isLoginViaPhone, setLoginMethod] = useState(true);
   const { loginMethod } = useAppSelector((state) => state.app);
   const { requestOtpLoading, email, mobile } = useAppSelector((state) => state.auth);
   const [isFocused, setIsFocused] = useState(false);
@@ -46,12 +42,12 @@ export default function Login() {
     dispatch(setMobile(""))
   };
   
-  const handleOtpSent = (method: "phone" | "email") => {
-    if (method === "phone" && mobile.length === 10) {
+  const handleOtpSent = () => {
+    if (loginMethod === "phone" && mobile.length === 10) {
       dispatch(requestOtpViaPhone(mobile))
       dispatch(setBottomSheetContentType('otpVerify'));
       Keyboard.dismiss();
-    } else if (method === "email" && isValidEmail(email)) {
+    } else if (loginMethod === "email" && isValidEmail(email)) {
       dispatch(requestOtpViaEmail(email))
       .unwrap()
       .then((res) => {
@@ -133,13 +129,13 @@ export default function Login() {
               {loginMethod === "phone" ? (
                 <PrimaryButton
                   label="SEND OTP"
-                  onPress={() => handleOtpSent("phone")}
+                  onPress={() => handleOtpSent()}
                   disabled={mobile.length === 10 ? false : true}
                 />
               ) : (
                 <PrimaryButton
                   label="SEND OTP"
-                  onPress={() => handleOtpSent("email")}
+                  onPress={() => handleOtpSent()}
                   disabled={!email || !isValidEmail(email)}
                   loading={requestOtpLoading}
                 />
@@ -214,7 +210,6 @@ const getStyles = (colors: TColors) =>
       flex: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      // justifyContent: "center",
       paddingHorizontal: 24,
     },
     header: {
@@ -292,7 +287,6 @@ const getStyles = (colors: TColors) =>
       marginVertical: 8,
     },
     divider: {
-      // flex: 1,
       width: 100,
       height: 0.5,
       backgroundColor: colors.border,

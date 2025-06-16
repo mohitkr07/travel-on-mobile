@@ -1,20 +1,7 @@
+import { TAppSliceState } from "@/types/constantsTypes";
 import { createSlice } from "@reduxjs/toolkit";
 
-type AppState = {
-  bottomSheetContent?: BottomSheetContent | null;
-  bottomSheetIndex: number;
-  loginMethod: "phone" | "email";
-  errorMsg?: string;
-  chipVisible?: boolean;
-};
-
-type BottomSheetContent =
-  | "otpVerify"
-  | "emailVerify"
-  | "profilePic"
-  | "tripSurvey";
-
-const initialState: AppState = {
+const initialState: TAppSliceState = {
   bottomSheetContent: "otpVerify",
   bottomSheetIndex: -1,
   loginMethod: "email",

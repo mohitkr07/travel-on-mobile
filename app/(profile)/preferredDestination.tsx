@@ -3,7 +3,7 @@ import CustomHeader from "@/components/ui/CustomHeader";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
-import { useRoute, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -23,7 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const destinations = [
   {
     label: "Mountains",
-    image: require("@/assets/images/mountains.jpg"), // Replace with your actual image paths
+    image: require("@/assets/images/mountains.jpg"),
   },
   {
     label: "Cities",

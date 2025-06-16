@@ -1,32 +1,8 @@
+import { API_STATUS } from "@/constants/constants";
 import { requestOtpViaEmail, verifyOtpViaEmail } from "@/networking/auth";
+import { AuthState } from "@/types/constantsTypes";
 import { saveTokens } from "@/utils/tokenStorage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export const API_STATUS = {
-  IDLE: "idle",
-  LOADING: "loading",
-  SUCCESS: "success",
-  ERROR: "error",
-} as const;
-
-type AUTH_STATE = (typeof API_STATUS)[keyof typeof API_STATUS];
-
-type AuthState = {
-  isAuthenticated: boolean;
-  accessToken?: string | null;
-  refreshToken?: string | null;
-  mobile: string;
-  email: string;
-  user?: {
-    id: string;
-    email: string;
-    phone?: string;
-    name?: string;
-    profilePic?: string;
-  } | null;
-  requestOtpLoading?: AUTH_STATE;
-  verifyOtpLoading?: AUTH_STATE;
-};
 
 const initialState: AuthState = {
   isAuthenticated: false,

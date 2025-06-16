@@ -1,4 +1,4 @@
-import { API_STATUS } from "@/redux/slices/authSlice";
+import { API_STATUS } from "@/constants/constants";
 import { TPrimaryButton } from "@/types/components";
 import { TColors } from "@/types/theme";
 import { responsiveFontSize } from "@/utils/responsive";

@@ -72,7 +72,6 @@ const Welcome = () => {
   };
 
   return (
-    // <TripSurvey />
     <SafeAreaView style={styles.container}>
       <ScrollView
         ref={scrollRef}
@@ -86,14 +85,12 @@ const Welcome = () => {
         <WelcomeSecond />
       </ScrollView>
 
-      {/* Dots Indicator */}
       <View style={styles.dotsContainer}>
         {[0, 1].map((i) => (
           <View key={i} style={[styles.dot, page === i && styles.dotActive]} />
         ))}
       </View>
 
-      {/* Bottom Section */}
       <View style={styles.bottomSection}>
         <Text style={styles.bottomText}>Let&apos;s start exploring.</Text>
         <PrimaryButton label="PLAN. POST. PACK" onPress={handlePlanPostPack} />
@@ -124,7 +121,6 @@ const getStyles = (colors: TColors) =>
       marginTop: 24,
       padding: 7,
       borderRadius: 100,
-      // backgroundColor: colors.backgroundDisabled,
       top: responsiveHeight(37),
     },
     dot: {

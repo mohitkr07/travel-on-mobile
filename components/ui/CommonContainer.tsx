@@ -2,7 +2,6 @@ import LeftAngle from "@/assets/svgs/LeftAngle";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
-import { useRouter } from "expo-router";
 import React from "react";
 import {
     KeyboardAvoidingView,
@@ -23,7 +22,6 @@ type CommonContainerProps = {
 const CommonContainer = ({ children }: CommonContainerProps) => {
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
-  const router= useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -45,9 +43,6 @@ const CommonContainer = ({ children }: CommonContainerProps) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
-          // onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          //   // Handle scroll event if needed
-          // }}
         >{children}</ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks';
 import { setErrorMsgChipVisible } from '@/redux/slices/appSlice';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View, Dimensions, Keyboard, Platform } from 'react-native';
+import { Animated, StyleSheet, Text, View, Dimensions, Keyboard, Platform } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const AUTO_HIDE_DURATION = 2500; // ms
@@ -12,7 +12,6 @@ const ErrorChip = () => {
   const dispatch = useAppDispatch();
   const { errorMsg, chipVisible } = useAppSelector((state) => state.app);
 
-  // Keyboard listeners
   useEffect(() => {
     const showSub = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
@@ -28,7 +27,6 @@ const ErrorChip = () => {
     };
   }, []);
 
-  // Handle fade in/out and auto-hide
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (chipVisible) {
@@ -38,7 +36,6 @@ const ErrorChip = () => {
         useNativeDriver: true,
       }).start();
 
-      // Auto-hide after duration
       timer = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -46,12 +43,9 @@ const ErrorChip = () => {
           useNativeDriver: true,
         }).start(() => {
           dispatch(setErrorMsgChipVisible(false));
-          // Optionally reset errorMsg here if you want
-          // dispatch(resetErrorMsg());
         });
       }, AUTO_HIDE_DURATION);
     } else {
-      // If hidden, ensure opacity is 0
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 300,

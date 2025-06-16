@@ -1,14 +1,11 @@
-import BigCheck from "@/assets/svgs/bigCheck";
 import Companion from "@/assets/svgs/Companion";
 import TrollyBag from "@/assets/svgs/TrollyBag";
 import VibeWith from "@/assets/svgs/VibeWith";
 import CustomHeader from "@/components/ui/CustomHeader";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-import { CHIPS_OPTIONS } from "@/constants/helper";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import {
   setBottomSheetContentType,
-  setBottomSheetIndex,
 } from "@/redux/slices/appSlice";
 import {
   CHIPS_SELECTORS,
@@ -19,12 +16,10 @@ import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
