@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { appSlice } from './slices/appSlice';
 import { tripSurveySlice } from './slices/tripSurveySlice';
 import { authSlice } from './slices/authSlice';
+import { profileSlice } from './slices/profileSlice';
 
 export const store = configureStore({
     reducer: {
         app: appSlice.reducer,
         tripSurvey: tripSurveySlice.reducer,
         auth: authSlice.reducer,
+        profile: profileSlice.reducer,
     },
 })
 

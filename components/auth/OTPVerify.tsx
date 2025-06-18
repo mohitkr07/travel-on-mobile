@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { verifyOtpViaEmail, verifyOtpViaPhone } from "@/networking/auth";
-import { setErrorMsg } from "@/redux/slices/appSlice";
+import { setChipMsg } from "@/redux/slices/appSlice";
+import { loginSuccess } from "@/redux/slices/authSlice";
+import { OTPPayload } from "@/types/constantsTypes";
 import { TColors } from "@/types/theme";
+import { saveTokens } from "@/utils/tokenStorage";
 import {
   BottomSheetTextInput,
   TouchableWithoutFeedback,
@@ -18,7 +21,7 @@ import {
   View
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
-import { OTPPayload } from "@/types/constantsTypes";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTP_LENGTH = 5;
 
@@ -95,13 +98,21 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
 
     dispatch(action)
       .unwrap()
-      .then(() => {
+      .then(async (res: any) => {
         console.log("OTP verification successful");
+        const { accessToken, refreshToken } = res.token;
         closeBottomSheet();
+        await saveTokens(
+          accessToken,
+          refreshToken
+        );
+        await AsyncStorage.setItem("onboarding", "started");
+        dispatch(loginSuccess({accessToken, refreshToken}));
+        dispatch(setChipMsg("Verified"));
         router.push("/(profile)/profileForm");
       })
       .catch((error: unknown) => {
-        dispatch(setErrorMsg("Invalid OTP"));
+        dispatch(setChipMsg("Invalid OTP"));
         console.error("OTP verification failed:", error);
       });
   };

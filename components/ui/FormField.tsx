@@ -19,7 +19,7 @@ const getStyles = (colors: TColors) =>
     },
     input: {
       backgroundColor: colors.background,
-      borderRadius: 16,
+      borderRadius: 8,
       marginTop: 6,
       marginBottom: 12,
       paddingHorizontal: 12,

@@ -8,9 +8,11 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 const CustomHeader = ({
   title,
   subtitle,
+  onBackPress,
 }: {
   title: string;
   subtitle?: string;
+  onBackPress?: () => void;
 }) => {
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
@@ -18,7 +20,7 @@ const CustomHeader = ({
 
   return (
     <View style={styles.headerContainer}>
-      <Pressable onPress={() => router.back()}>
+      <Pressable onPress={() => onBackPress ? onBackPress() : router.back()}>
         <BackArrow height={20} width={26} />
       </Pressable>
       <View>

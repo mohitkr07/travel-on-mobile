@@ -1,21 +1,21 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 export const saveTokens = async (accessToken: string, refreshToken: string) =>{
-    await AsyncStorage.setItem('accessToken', accessToken);
-    await AsyncStorage.setItem('refreshToken', refreshToken);
+    await SecureStore.setItemAsync('accessToken', accessToken);
+    await SecureStore.setItemAsync('refreshToken', refreshToken);
 }
 
 export const getAccessToken = async () => {
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    const accessToken = await SecureStore.getItemAsync('accessToken');
     return accessToken;
 }
 
 export const getRefreshToken = async () => {
-    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    const refreshToken = await SecureStore.getItemAsync('refreshToken');
     return refreshToken;
 }
 
 export const clearTokens = async () => {
-    await AsyncStorage.removeItem('accessToken');
-    await AsyncStorage.removeItem('refreshToken');
+    await SecureStore.deleteItemAsync('accessToken');
+    await SecureStore.deleteItemAsync('refreshToken');
 }

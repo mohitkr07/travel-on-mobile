@@ -4,9 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: TAppSliceState = {
   bottomSheetContent: "otpVerify",
   bottomSheetIndex: -1,
-  loginMethod: "email",
+  loginMethod: "phone",
   errorMsg: "",
   chipVisible: false,
+  globalLoaderOn: false,
 };
 
 export const appSlice = createSlice({
@@ -27,7 +28,7 @@ export const appSlice = createSlice({
         state.bottomSheetIndex = -1;
       }
     },
-    setErrorMsg: (state, action) => {
+    setChipMsg: (state, action) => {
       state.errorMsg = action.payload;
        state.chipVisible = true;
     },
@@ -36,7 +37,10 @@ export const appSlice = createSlice({
       if (!action.payload) {
         state.errorMsg = "";
       }
-    }
+    },
+    setGlobalLoaderOn: (state, action) => {
+      state.globalLoaderOn = action.payload;
+    },
   },
 });
 
@@ -44,7 +48,8 @@ export const {
   setBottomSheetIndex,
   setLoginMethod,
   setBottomSheetContentType,
-  setErrorMsg,
-    setErrorMsgChipVisible
+  setChipMsg,
+    setErrorMsgChipVisible,
+    setGlobalLoaderOn
 } = appSlice.actions;
 export default appSlice.reducer;

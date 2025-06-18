@@ -20,6 +20,7 @@ type TAppSliceState = {
   loginMethod: "phone" | "email";
   errorMsg?: string;
   chipVisible?: boolean;
+  globalLoaderOn?: boolean;
 };
 
 type TBottomSheetContent =
@@ -43,16 +44,27 @@ type AuthState = {
   refreshToken?: string | null;
   mobile: string;
   email: string;
-  user?: {
+  requestOtpLoading?: TAUTH_STATUS;
+  verifyOtpLoading?: TAUTH_STATUS;
+  refreshTokenLoading?: TAUTH_STATUS;
+};
+
+type profileState = {
+  user: {
     id: string;
     email: string;
     phone?: string;
     name?: string;
     profilePic?: string;
   } | null;
-  requestOtpLoading?: TAUTH_STATUS;
-  verifyOtpLoading?: TAUTH_STATUS;
-};
+  onboardingDetails: {
+    firstName: string;
+    lastName: string;
+    dob: string;
+    gender: string;
+  };
+  profileLoading: TAUTH_STATUS;
+}
 
 export type {
   ChipOption,
@@ -63,4 +75,5 @@ export type {
   TAPI_STATUS,
   TAUTH_STATUS,
   AuthState,
+  profileState
 };
