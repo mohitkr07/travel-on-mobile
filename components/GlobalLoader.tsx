@@ -5,10 +5,15 @@ import { API_STATUS } from "@/constants/constants";
 
 const GlobalLoader = () => {
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const { profileLoading } = useAppSelector((state) => state.profile);
   const { globalLoaderOn } = useAppSelector((state) => state.app);
+  const { profileLoading, onboardLoading } = useAppSelector(
+    (state) => state.profile
+  );
 
-  const isLoading = profileLoading === API_STATUS.LOADING || globalLoaderOn;
+  const isLoading =
+    profileLoading === API_STATUS.LOADING ||
+    globalLoaderOn ||
+    onboardLoading === API_STATUS.LOADING;
 
   useEffect(() => {
     Animated.timing(opacityAnim, {
@@ -16,7 +21,6 @@ const GlobalLoader = () => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, opacityAnim]);
 
   return (

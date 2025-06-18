@@ -21,7 +21,6 @@ import {
   View
 } from "react-native";
 import PrimaryButton from "../ui/PrimaryButton";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTP_LENGTH = 5;
 
@@ -106,10 +105,9 @@ const OTPVerify = ({ closeBottomSheet }: OTPVerifyProps) => {
           accessToken,
           refreshToken
         );
-        await AsyncStorage.setItem("onboarding", "started");
         dispatch(loginSuccess({accessToken, refreshToken}));
         dispatch(setChipMsg("Verified"));
-        router.push("/(profile)/profileForm");
+        router.push("/(onboard)/profileForm");
       })
       .catch((error: unknown) => {
         dispatch(setChipMsg("Invalid OTP"));

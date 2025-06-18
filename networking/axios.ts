@@ -1,7 +1,6 @@
 import { BASE_URL } from "@/constants/constants";
-import { getAccessToken } from "@/utils/tokenStorage";
+import { getAccessToken, getRefreshToken, saveTokens } from "@/utils/tokenStorage";
 import axios from "axios";
-import { refreshAccessToken } from "./auth";
 
 const API = axios.create({
   baseURL: BASE_URL,
@@ -51,3 +50,19 @@ API.interceptors.response.use(
 
 
 export default API;
+
+const refreshAccessToken = async () => {
+  try {
+    const refreshToken = await getRefreshToken();
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+    const res = await API.post("/auth/refresh-access-token", { refreshToken });
+    await saveTokens(res.data.accessToken, refreshToken);
+    console.log("Access token refreshed successfully:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    throw error;
+  }
+};

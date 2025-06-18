@@ -1,17 +1,17 @@
 import { API_STATUS } from "@/constants/constants";
-import { getProfile } from "@/networking/profile";
+import { getProfileAsync, onboardProfileAsync } from "@/networking/profile";
 import { profileState } from "@/types/constantsTypes";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: profileState = {
   user: null,
   onboardingDetails: {
-    firstName: "",
-    lastName: "",
+    name: "",
     dob: "",
     gender: "",
   },
   profileLoading: API_STATUS.IDLE,
+  onboardLoading: API_STATUS.IDLE,
 };
 
 export const profileSlice = createSlice({
@@ -24,21 +24,35 @@ export const profileSlice = createSlice({
     clearUser: (state) => {
       state.user = null;
     },
-    setOnboardingDetails: (state, action: PayloadAction<profileState["onboardingDetails"]>) => {
-      state.onboardingDetails = action.payload;
+    setOnboardingDetails: (state, action: PayloadAction<{ firstName: string; lastName: string; dob: string; gender: string}>) => {
+      const { firstName, lastName, dob, gender} = action.payload;
+
+      state.onboardingDetails.name = `${firstName} ${lastName}`;
+      state.onboardingDetails.dob = dob;
+      state.onboardingDetails.gender = gender;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getProfile.pending, (state) => {
+      .addCase(getProfileAsync.pending, (state) => {
         state.profileLoading = API_STATUS.LOADING;
       })
-      .addCase(getProfile.fulfilled, (state, action) => {
+      .addCase(getProfileAsync.fulfilled, (state, action) => {
         state.profileLoading = API_STATUS.SUCCESS;
       })
-      .addCase(getProfile.rejected, (state, action) => {
+      .addCase(getProfileAsync.rejected, (state, action) => {
         state.profileLoading = API_STATUS.IDLE;
-      });
+      })
+
+      .addCase(onboardProfileAsync.pending, (state) => {
+        state.onboardLoading = API_STATUS.LOADING;
+      })
+      .addCase(onboardProfileAsync.fulfilled, (state, action) => {
+        state.onboardLoading = API_STATUS.SUCCESS;
+      })
+      .addCase(onboardProfileAsync.rejected, (state, action) => {
+        state.onboardLoading = API_STATUS.ERROR;
+      })
   },
 });
 

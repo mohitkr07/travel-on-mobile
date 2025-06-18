@@ -15,6 +15,7 @@ type OTPPayload =
   | { email: string; otp: string };
 
 type TAppSliceState = {
+  
   bottomSheetContent?: TBottomSheetContent | null;
   bottomSheetIndex: number;
   loginMethod: "phone" | "email";
@@ -40,6 +41,7 @@ type TAUTH_STATUS = TAPI_STATUS[keyof TAPI_STATUS];
 
 type AuthState = {
   isAuthenticated: boolean;
+  isOnboardingComplete: boolean;
   accessToken?: string | null;
   refreshToken?: string | null;
   mobile: string;
@@ -58,12 +60,12 @@ type profileState = {
     profilePic?: string;
   } | null;
   onboardingDetails: {
-    firstName: string;
-    lastName: string;
+    name: string;
     dob: string;
     gender: string;
   };
   profileLoading: TAUTH_STATUS;
+  onboardLoading: TAUTH_STATUS;
 }
 
 export type {

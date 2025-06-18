@@ -55,24 +55,24 @@ export const verifyOtpViaEmail = createAsyncThunk(
 
 export const refreshAccessToken = async () => {
   try {
-      const refreshToken = await getRefreshToken();
-      if(!refreshToken) {
-        throw new Error("No refresh token available");
-      }
-      const res = await API.post("/auth/refresh-access-token", { refreshToken });
-      await saveTokens(res.data.accessToken, refreshToken);
-      console.log("Access token refreshed successfully:", res.data);
-      return res.data;
-    } catch (error) {
-      console.error("Error refreshing access token:", error);
-      throw error;
+    const refreshToken = await getRefreshToken();
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
     }
-    }
+    const res = await API.post("/auth/refresh-access-token", { refreshToken });
+    await saveTokens(res.data.accessToken, refreshToken);
+    console.log("Access token refreshed successfully:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    throw error;
+  }
+};
 
 export const refreshAccessTokenAsync = createAsyncThunk(
   "auth/refreshAccessToken",
   async () => {
-    refreshAccessToken()
+    refreshAccessToken();
   }
 );
 
@@ -93,4 +93,3 @@ export const refreshAccessTokenAsync = createAsyncThunk(
 //     }
 //   }
 // );
-
