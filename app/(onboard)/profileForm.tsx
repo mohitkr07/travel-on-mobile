@@ -46,11 +46,8 @@ const ProfileForm: React.FC = () => {
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      e.preventDefault();
-
-      Alert.alert(
+  const showLeaveOnboardingAlert = (onLeave: () => void) => {
+    Alert.alert(
         "Leave Onboarding?",
         "If you leave now, your setup won't be completed. Do you still want to exit?",
         [
@@ -58,10 +55,16 @@ const ProfileForm: React.FC = () => {
           {
             text: "Leave",
             style: "destructive",
-            onPress: () => navigation.dispatch(e.data.action),
+            onPress: onLeave,
           },
         ]
       );
+    }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+      showLeaveOnboardingAlert(() => navigation.dispatch(e.data.action));
     });
 
     return unsubscribe;
@@ -88,7 +91,7 @@ const ProfileForm: React.FC = () => {
         title="Complete your profile"
         subtitle="what would you like your buddies to call you?"
         onBackPress={() => {
-          router.push("/(auth)/login");
+          showLeaveOnboardingAlert(() => router.push("/(auth)/login"));
         }}
       />
       <KeyboardAvoidingView

@@ -54,7 +54,7 @@ const AnimatedEmoji = () => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  });
 
   const rotate = animation.interpolate({
     inputRange: [-1, 0, 1],

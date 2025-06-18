@@ -1,5 +1,4 @@
 import { CHIPS_OPTIONS } from "@/constants/helper";
-import { ChipOption } from "@/types/constantsTypes";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const CHIPS_SELECTORS = Object.keys(CHIPS_OPTIONS);

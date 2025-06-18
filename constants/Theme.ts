@@ -7,7 +7,7 @@ const MyLightTheme: TCustomTheme = {
         ...DefaultTheme.colors,
         primary: "rgb(36, 186, 236)",
         background: "rbg(255, 255, 255)",
-        themeBackground: "rgb(188, 236, 252)",
+        themeBackground: "rgb(176, 231, 250)",
         card: "#f5f5f5",
         text: "#000000",
         border: "#cccccc",

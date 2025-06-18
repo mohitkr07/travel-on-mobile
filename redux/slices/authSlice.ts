@@ -11,6 +11,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: AuthState = {
   isAuthenticated: false,
+  isOnboardingComplete: false,
   accessToken: null,
   refreshToken: null,
   mobile: "",
@@ -30,6 +31,9 @@ export const authSlice = createSlice({
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
+    setIsOnboardingComplete: (state, action: PayloadAction<boolean>) => {
+      state.isOnboardingComplete = action.payload;
+    },
     loginSuccess: (
       state,
       action: PayloadAction<{
@@ -43,6 +47,7 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.isAuthenticated = false;
+      state.isOnboardingComplete = false;
       state.accessToken = null;
       state.refreshToken = null;
     },
@@ -104,5 +109,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setEmail, setMobile, loginSuccess, logout } = authSlice.actions;
+export const { setEmail, setMobile, loginSuccess, logout, setIsOnboardingComplete } = authSlice.actions;
 export default authSlice.reducer;

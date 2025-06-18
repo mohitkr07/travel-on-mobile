@@ -4,9 +4,9 @@ import VibeWith from "@/assets/svgs/VibeWith";
 import CustomHeader from "@/components/ui/CustomHeader";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import {
-  setBottomSheetContentType,
-} from "@/redux/slices/appSlice";
+import { onboardProfileAsync } from "@/networking/profile";
+import { setBottomSheetContentType } from "@/redux/slices/appSlice";
+import { setIsOnboardingComplete } from "@/redux/slices/authSlice";
 import {
   CHIPS_SELECTORS,
   setActiveChipSelector,
@@ -14,6 +14,7 @@ import {
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
 import { useTheme } from "@react-navigation/native";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Keyboard,
@@ -52,6 +53,7 @@ const TripSurvey: React.FC = () => {
   const dispatch = useAppDispatch();
   const { selectedCompanionsKeys, selectedTripTypesKeys, selectedVibesKeys } =
     useAppSelector((state) => state.tripSurvey);
+  const { onboardingDetails } = useAppSelector((state) => state.profile);
 
   const handleCardPress = (key: string) => {
     setSelected(key);
@@ -59,18 +61,38 @@ const TripSurvey: React.FC = () => {
     dispatch(setBottomSheetContentType("tripSurvey"));
   };
 
-  const getBackgroundColor = () =>{
-    switch (selected) {
+  const getBackgroundColor = (cardKey: string) => {
+    switch (cardKey) {
       case CHIPS_SELECTORS[0]:
-        return selectedTripTypesKeys.length > 0 ? colors.primary : colors.card;
+        return selectedTripTypesKeys.length > 0
+          ? colors.themeBackground
+          : colors.card;
       case CHIPS_SELECTORS[1]:
-        return selectedCompanionsKeys.length > 0 ? colors.primary : colors.card;
+        return selectedCompanionsKeys.length > 0
+          ? colors.themeBackground
+          : colors.card;
       case CHIPS_SELECTORS[2]:
-        return selectedVibesKeys.length > 0 ? colors.primary : colors.card;
+        return selectedVibesKeys.length > 0
+          ? colors.themeBackground
+          : colors.card;
       default:
         return colors.card;
     }
-  }
+  };
+
+  const handleCompleteOnboarding = () => {
+    dispatch(setIsOnboardingComplete(true));
+    console.log(onboardingDetails);
+    dispatch(onboardProfileAsync(onboardingDetails))
+      .unwrap()
+      .then(() => {
+        console.log("Onboarding completed successfully");
+        router.replace("/(tabs)/home");
+      })
+      .catch((error) => {
+        console.error("Onboarding failed:", error);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -98,7 +120,7 @@ const TripSurvey: React.FC = () => {
                     {
                       width: responsiveWidth(35),
                       height: responsiveHeight(14),
-                      backgroundColor: colors.card,
+                      backgroundColor: getBackgroundColor(item.key),
                       borderRadius: 12,
                       alignItems: "center",
                       justifyContent: "center",
@@ -131,7 +153,7 @@ const TripSurvey: React.FC = () => {
 
             <PrimaryButton
               label="Next"
-              onPress={() => console.log("next")}
+              onPress={handleCompleteOnboarding}
               style={{ marginBottom: 15, marginTop: 10 }}
             />
           </View>
