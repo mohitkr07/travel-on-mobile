@@ -1,31 +1,51 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { API_STATUS } from "@/constants/constants";
 import { TPrimaryButton } from "@/types/components";
-import { responsiveFontSize } from "@/utils/responsive";
 import { TColors } from "@/types/theme";
+import { responsiveFontSize } from "@/utils/responsive";
+import { useTheme } from "@react-navigation/native";
+import React from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const PrimaryButton = ({ label, onPress, disabled, width }: TPrimaryButton) => {
+const PrimaryButton = ({
+  label,
+  onPress,
+  disabled,
+  width,
+  style,
+  loading,
+}: TPrimaryButton) => {
   const { colors } = useTheme();
   const typedColors = colors as TColors;
   const styles = getStyles(typedColors);
 
   return (
-    <TouchableOpacity
-      style={[styles.button, disabled && { backgroundColor: "transparent" }]}
-      onPress={onPress}
-      disabled={disabled}
-      activeOpacity={0.8}
-    >
-      <View
-        style={[
-          styles.buttonParent,
-          disabled && { backgroundColor: typedColors.backgroundDisabled },
-        ]}
+    <View style={[{ width: width || "100%" }, style]}>
+      <TouchableOpacity
+        style={[styles.button, disabled && { backgroundColor: "transparent" }]}
+        onPress={onPress}
+        disabled={disabled}
+        activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>{label}</Text>
-      </View>
-    </TouchableOpacity>
+        <View
+          style={[
+            styles.buttonParent,
+            disabled && { backgroundColor: typedColors.backgroundDisabled },
+          ]}
+        >
+          {loading === API_STATUS.LOADING && !disabled ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>{label}</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -43,7 +63,7 @@ const getStyles = (colors: TColors) =>
     buttonParent: {
       backgroundColor: colors.primary,
       width: "100%",
-      height: "93%",
+      height: "92%",
       borderTopLeftRadius: 16,
       borderTopRightRadius: 16,
       borderBottomLeftRadius: 16,

@@ -19,10 +19,12 @@ type TCustomTheme = {
   colors: {
     primary: string;
     background: string;
+    themeBackground: string;
     card: string;
     text: string;
     border: string;
     notification: string;
+    textLight0: string;
     textLight1: string;
     backgroundDisabled: string;
     linebreak: string;

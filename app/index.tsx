@@ -2,11 +2,13 @@ import Welcome1 from "@/assets/svgs/Welcome1";
 import Welcome2 from "@/assets/svgs/Welcome2";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { getProfileAsync } from "@/networking/profile";
 import { TColors } from "@/types/theme";
 import { responsiveHeight, responsiveWidth } from "@/utils/responsive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -56,7 +58,7 @@ function WelcomeSecond() {
 }
 
 const Welcome = () => {
-  const navigate = useRouter();
+  const router = useRouter();
   const { colors } = useTheme();
   const styles = getStyles(colors as TColors);
   const [page, setPage] = useState(0);
@@ -69,37 +71,42 @@ const Welcome = () => {
   };
 
   const handlePlanPostPack = () => {
-    navigate.push("/(auth)/login");
+    router.push("/(auth)/login");
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      >
-        <WelcomeFirst />
-        <WelcomeSecond />
-      </ScrollView>
 
-      {/* Dots Indicator */}
-      <View style={styles.dotsContainer}>
-        {[0, 1].map((i) => (
-          <View key={i} style={[styles.dot, page === i && styles.dotActive]} />
-        ))}
-      </View>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        >
+          <WelcomeFirst />
+          <WelcomeSecond />
+        </ScrollView>
 
-      {/* Bottom Section */}
-      <View style={styles.bottomSection}>
-        <Text style={styles.bottomText}>Let&apos;s start exploring.</Text>
-        <PrimaryButton label="PLAN. POST. PACK" onPress={handlePlanPostPack} />
-      </View>
-    </SafeAreaView>
-  );
+        <View style={styles.dotsContainer}>
+          {[0, 1].map((i) => (
+            <View
+              key={i}
+              style={[styles.dot, page === i && styles.dotActive]}
+            />
+          ))}
+        </View>
+
+        <View style={styles.bottomSection}>
+          <Text style={styles.bottomText}>Let&apos;s start exploring.</Text>
+          <PrimaryButton
+            label="PLAN. POST. PACK"
+            onPress={handlePlanPostPack}
+          />
+        </View>
+      </SafeAreaView>
+    )
 };
 
 export default Welcome;
@@ -124,14 +131,13 @@ const getStyles = (colors: TColors) =>
       marginTop: 24,
       padding: 7,
       borderRadius: 100,
-      backgroundColor: colors.backgroundDisabled,
       top: responsiveHeight(37),
     },
     dot: {
       width: 8,
       height: 8,
       borderRadius: 100,
-      backgroundColor: colors.textLight1,
+      backgroundColor: colors.border,
       marginHorizontal: 4,
     },
     dotActive: {

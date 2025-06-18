@@ -1,6 +1,5 @@
-import React from "react";
-import { View, Animated, StyleSheet } from "react-native";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet } from "react-native";
 import { useAppSelector } from "@/hooks/hooks";
 
 const DimmingOverlay = () => {
@@ -13,12 +12,15 @@ const DimmingOverlay = () => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [bottomSheetIndex]);
+  }, [bottomSheetIndex, opacityAnim]);
 
   return (
     <Animated.View
       pointerEvents={bottomSheetIndex >= 0 ? "auto" : "none"}
-      style={[StyleSheet.absoluteFill, { backgroundColor: "black", opacity: opacityAnim }]}
+      style={[
+        StyleSheet.absoluteFill,
+        { backgroundColor: "black", opacity: opacityAnim },
+      ]}
     />
   );
 };
